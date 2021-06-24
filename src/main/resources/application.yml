@@ -5,3 +5,8 @@ server:
     port: 8081
     servlet:
         context-path: /ecosoft/api/v1/microservices
+app:
+  name: Microservices de clientes
+  year: 2021
+  edition: Community
+  countries: es, ar, it, ca. br
