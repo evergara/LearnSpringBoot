@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.hateoas.Link;
+
+import javax.validation.Valid;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -99,7 +102,7 @@ public class UserControllerRest {
     }
 
     @PostMapping()
-    public ResponseEntity<String> createUser(@RequestBody UserDTO userDTO) throws MalformedURLException {
+    public ResponseEntity<String> createUser(@Valid @RequestBody UserDTO userDTO) throws MalformedURLException {
         System.out.println("Creating user " + userDTO.getName());
 
          URI location = ServletUriComponentsBuilder.
