@@ -1,6 +1,7 @@
 package com.ecosoft.customer.customers.model;
 
 
+import com.ecosoft.customer.customers.validators.PASS;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -38,7 +39,8 @@ public class UserDTO  extends RepresentationModel<UserDTO> {
     private String user;
 
     @NotBlank(message = "{app.field.pass.error}")
-    @Size( min = 7, max = 16, message = "{app.field.pass.error}")
+    //@Size( min = 7, max = 16, message = "{app.field.pass.error}")
+    @PASS(message = "{app.field.pass.error}")
     @NonNull
     @ApiModelProperty(example = "@@xxjd123dfh456")
     private String pass;
