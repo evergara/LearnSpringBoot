@@ -1,10 +1,13 @@
 package com.ecosoft.customer.customers.controller;
 
 import com.ecosoft.customer.customers.model.UserDTO;
+import com.ecosoft.customer.customers.validators.GroupValidatorOnCreate;
+import com.ecosoft.customer.customers.validators.GroupValidatorOnUpdate;
 import io.swagger.annotations.*;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -14,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.hateoas.Link;
-
-import javax.validation.Valid;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -102,7 +103,7 @@ public class UserControllerRest {
     }
 
     @PostMapping()
-    public ResponseEntity<String> createUser(@Valid @RequestBody UserDTO userDTO) throws MalformedURLException {
+    public ResponseEntity<String> createUser(@Validated(value = GroupValidatorOnCreate.class) @RequestBody UserDTO userDTO) throws MalformedURLException {
         System.out.println("Creating user " + userDTO.getName());
 
          URI location = ServletUriComponentsBuilder.
@@ -112,6 +113,12 @@ public class UserControllerRest {
                 .toUri();
         //return ResponseEntity.ok(location.toURL().toString()).;
         return ResponseEntity.created(location).build();
+    }
+
+    @PutMapping()
+    public ResponseEntity<UserDTO> updatedUser(@Validated(value = GroupValidatorOnUpdate.class) @RequestBody UserDTO userDTO) throws MalformedURLException {
+        System.out.println("Updated user " + userDTO.getName());
+        return ResponseEntity.ok(userDTO);
     }
 
     @DeleteMapping("/{id}")

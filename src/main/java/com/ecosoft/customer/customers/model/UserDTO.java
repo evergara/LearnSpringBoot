@@ -1,15 +1,15 @@
 package com.ecosoft.customer.customers.model;
 
 
+import com.ecosoft.customer.customers.validators.GroupValidatorOnCreate;
+import com.ecosoft.customer.customers.validators.GroupValidatorOnUpdate;
 import com.ecosoft.customer.customers.validators.PASS;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Getter
@@ -44,4 +44,8 @@ public class UserDTO  extends RepresentationModel<UserDTO> {
     @NonNull
     @ApiModelProperty(example = "@@xxjd123dfh456")
     private String pass;
+
+    @AssertFalse(message = "{app.file.enable.error.false}", groups = GroupValidatorOnUpdate.class)
+    @AssertTrue(message = "{app.file.enable.error.true}", groups = GroupValidatorOnCreate.class)
+    private boolean enable;
 }
