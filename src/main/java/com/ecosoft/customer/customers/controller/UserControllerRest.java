@@ -1,6 +1,9 @@
 package com.ecosoft.customer.customers.controller;
 
 import com.ecosoft.customer.customers.model.UserDTO;
+import io.swagger.annotations.*;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -10,15 +13,27 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.hateoas.Link;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/users")
+@Api(tags = "User Api Rest")
 public class UserControllerRest {
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserByID(@PathVariable("id") Integer id){
+    @ApiOperation(notes="Retrieve one user system by id",value="Get user by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "Response ok if the operation was successful"),
+            @ApiResponse(code = 404,message = "Response not found if the resource could not be found")
+    })
+    public ResponseEntity<UserDTO> getUserByID(@ApiParam(example = "1",value = "Identifier for User",allowableValues = "1,2,3,4",required = true)
+                                                   @PathVariable("id") Integer id){
         System.out.println("Recovery user by id");
         UserDTO userDTO = new UserDTO(1,"Emerson", "admin","admin");
+
+        addLinkHATEOAS(userDTO);
 
         if (userDTO == null){
             return ResponseEntity.notFound().build();
@@ -27,35 +42,60 @@ public class UserControllerRest {
         return ResponseEntity.ok(userDTO);
     }
 
+    private void addLinkHATEOAS(UserDTO userDTO) {
+        Link withSelfRel =  linkTo(methodOn(UserControllerRest.class).
+                getUserByID(userDTO.getId())).withSelfRel();
+        userDTO.add(withSelfRel);
+    }
+
     @GetMapping()
-    public ResponseEntity<List<UserDTO>> listUsers(){
+    public ResponseEntity<CollectionModel<UserDTO>> listUsers(){
         System.out.println("Recovery users All");
         List<UserDTO> list = List.of(new UserDTO(1,"Emerson", "admin","admin"),
                                     new UserDTO(2,"Brilis", "customer","pass"),
                                     new UserDTO(2,"Brayam", "customer","123"));
+        for (UserDTO userDTO : list){
+            addLinkHATEOAS(userDTO);
+        }
+        CollectionModel<UserDTO> result = addLinkHATEOASToCollection(linkTo(methodOn(UserControllerRest.class).
+                listUsers()).withSelfRel(), list);
 
         if (list == null){
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(result);
+    }
+
+    private CollectionModel<UserDTO> addLinkHATEOASToCollection(Link withSelfRel, List<UserDTO> list) {
+        CollectionModel<UserDTO> result = CollectionModel.of(list, withSelfRel);
+        return  result;
     }
 
 
     @GetMapping(value = "/query", params={"name","user"})
-    public ResponseEntity<List<UserDTO>> listUsersQuery(@RequestParam(required = false) String name,
+    public ResponseEntity<CollectionModel<UserDTO>> listUsersQuery(@RequestParam(required = false) String name,
                                         @RequestParam(required = false) String user){
         System.out.println("Recovery users All Querye " + name);
         List<UserDTO> list = List.of(new UserDTO(1,"Emerson", "admin","admin"),
-                new UserDTO(2,"Brilis", "customer","pass"),
-                new UserDTO(3,"Brayan", "customer","123"));
+                                    new UserDTO(2,"Brilis", "customer","pass"),
+                                    new UserDTO(3,"Brayan", "negocio","123"),
+                                    new UserDTO(4,"Brayan", "socio","1234"));
         list = list.stream().filter(u-> u.getName().contains(name)).collect(Collectors.toList());
+
+
+        for (UserDTO userDTO : list){
+            addLinkHATEOAS(userDTO);
+        }
+        CollectionModel<UserDTO> result = addLinkHATEOASToCollection(linkTo(methodOn(UserControllerRest.class).
+                listUsersQuery(name, user)).withSelfRel(), list);
+
 
         if (list == null){
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping()
@@ -77,7 +117,9 @@ public class UserControllerRest {
         return ResponseEntity.ok(null);
     }
 
-    @PatchMapping(value = "/{id}")
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO>  updateCredential(Map<String,String> atribute, @PathVariable("id") Integer id){
         UserDTO userDTO = new UserDTO(1,"Emerson", "admin","admin");
         userDTO.setUser(atribute.get("user"));
