@@ -25,18 +25,21 @@ public class UserDTO  extends RepresentationModel<UserDTO> {
     private Integer id;
 
 
-    @NotBlank
-    @Size( min = 7, max = 200)
+    @NotBlank(message = "{app.field.name.error}")
+    @Size( min = 7, max = 200, message = "{app.field.name.error}")
     @NonNull
+    @ApiModelProperty(example = "Administrador")
     private String name;
 
-    @NotBlank
-    @Size( min = 7, max = 10)
+    @NotBlank(message = "{app.field.user.error}")
+    @Size( min = 7, max = 15, message = "{app.field.user.error}")
     @NonNull
+    @ApiModelProperty(example = "Administrador")
     private String user;
 
-    @NotBlank
-    @Size( min = 7, max = 16)
+    @NotBlank(message = "{app.field.pass.error}")
+    @Size( min = 7, max = 16, message = "{app.field.pass.error}")
     @NonNull
+    @ApiModelProperty(example = "@@xxjd123dfh456")
     private String pass;
 }
