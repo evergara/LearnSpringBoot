@@ -18,6 +18,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.hateoas.Link;
 
@@ -42,15 +44,16 @@ public class UserControllerRest {
     public ResponseEntity<UserDTO> getUserByID(@ApiParam(example = "1",value = "Identifier for User",allowableValues = "1,2,3,4",required = true)
                                                    @PathVariable("id") Integer id){
         System.out.println("Recovery user by id");
-        UserDTO userDTO = service.getUserById(id);
+        Optional<UserDTO> optUserDTO = service.getUserById(id);
 
-        addLinkHATEOAS(userDTO);
-
-        if (userDTO == null){
+        try {
+            UserDTO userDTO = optUserDTO.orElseThrow(NoSuchElementException::new);
+            addLinkHATEOAS(userDTO);
+            return ResponseEntity.ok(userDTO);
+        }
+        catch (NoSuchElementException e){
             return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok(userDTO);
     }
 
     private void addLinkHATEOAS(UserDTO userDTO) {

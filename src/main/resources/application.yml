@@ -8,5 +8,6 @@ server:
 app:
   name: Microservices de clientes
   year: 2021
+  ##Community, Pro
   edition: Community
   countries: es, ar, it, ca. br

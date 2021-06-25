@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IUserService {
-
-    public UserDTO getUserById(Integer id);
-    /**
     public Optional<UserDTO> getUserById(Integer id);
 
     public List<UserDTO> listAllUsers(Pageable pageable);
@@ -17,6 +14,5 @@ public interface IUserService {
     public UserDTO saveUser(UserDTO userDTO);
 
     public void deleteById(Integer id);
-    **/
 
 }
