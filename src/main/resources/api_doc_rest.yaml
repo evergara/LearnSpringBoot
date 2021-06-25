@@ -1,0 +1,334 @@
+swagger: '2.0'
+info:
+  description: Microservice
+  version: '1.0'
+  title: Ecosoft
+  termsOfService: 'http://escuelait.com'
+  contact:
+    name: Emerson Vergara
+    url: Ecosoft.com
+    email: Ecosoft@gmail.com
+  license:
+    name: Uso exclusivo Ecosoft
+    url: 'http://Ecosoft.com'
+host: 'empire.ecosoft.com:8081'
+basePath: /ecosoft/api/v1/microservices
+tags:
+  - name: User Api Rest
+    description: User Controller Rest
+  - name: hola-mundo-controller
+    description: Hola Mundo Controller
+paths:
+  /hola:
+    get:
+      tags:
+        - hola-mundo-controller
+      summary: saludo
+      operationId: saludoUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /users:
+    get:
+      tags:
+        - User Api Rest
+      summary: listUsers
+      operationId: listUsersUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CollectionModel«UserDTO»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - User Api Rest
+      summary: createUser
+      operationId: createUserUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: userDTO
+          description: userDTO
+          required: true
+          schema:
+            $ref: '#/definitions/UserDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    put:
+      tags:
+        - User Api Rest
+      summary: updatedUser
+      operationId: updatedUserUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: userDTO
+          description: userDTO
+          required: true
+          schema:
+            $ref: '#/definitions/UserDTO'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /users/query:
+    get:
+      tags:
+        - User Api Rest
+      summary: listUsersQuery
+      operationId: listUsersQueryUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: name
+          in: query
+          description: name
+          required: true
+          type: string
+        - name: user
+          in: query
+          description: user
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CollectionModel«UserDTO»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/users/{id}':
+    get:
+      tags:
+        - User Api Rest
+      summary: Get user by id
+      description: Retrieve one user system by id
+      operationId: getUserByIDUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: Identifier for User
+          required: true
+          type: integer
+          format: int32
+          x-example: 1
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+      responses:
+        '200':
+          description: Response ok if the operation was successful
+          schema:
+            $ref: '#/definitions/UserDTO'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Response not found if the resource could not be found
+      deprecated: false
+    post:
+      tags:
+        - User Api Rest
+      summary: updateCredential
+      operationId: updateCredentialUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: atribute
+          in: query
+          description: atribute
+          required: false
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserDTO'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - User Api Rest
+      summary: deleteUser
+      operationId: deleteUserUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+definitions:
+  CollectionModel«UserDTO»:
+    type: object
+    properties:
+      content:
+        type: array
+        items:
+          $ref: '#/definitions/UserDTO'
+      links:
+        $ref: '#/definitions/Links'
+    title: CollectionModel«UserDTO»
+  Link:
+    type: object
+    properties:
+      deprecation:
+        type: string
+      href:
+        type: string
+      hreflang:
+        type: string
+      media:
+        type: string
+      name:
+        type: string
+      profile:
+        type: string
+      rel:
+        $ref: '#/definitions/LinkRelation'
+      template:
+        $ref: '#/definitions/UriTemplate'
+      templated:
+        type: boolean
+      title:
+        type: string
+      type:
+        type: string
+    title: Link
+  LinkRelation:
+    type: object
+    title: LinkRelation
+  Links:
+    type: object
+    properties:
+      empty:
+        type: boolean
+    title: Links
+  TemplateVariables:
+    type: object
+    title: TemplateVariables
+  UriTemplate:
+    type: object
+    properties:
+      variableNames:
+        type: array
+        items:
+          type: string
+      variables:
+        $ref: '#/definitions/TemplateVariables'
+    title: UriTemplate
+  UserDTO:
+    type: object
+    required:
+      - id
+    properties:
+      enable:
+        type: boolean
+      id:
+        type: integer
+        format: int32
+        example: 1
+        description: Unique identifier of the User.
+      links:
+        type: array
+        items:
+          $ref: '#/definitions/Link'
+      name:
+        type: string
+        example: Administrador
+      pass:
+        type: string
+        example: '@@xxjd123dfh456'
+      user:
+        type: string
+        example: Administrador
+    title: UserDTO
+    description: User DTO

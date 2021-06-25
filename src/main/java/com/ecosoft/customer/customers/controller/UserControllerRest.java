@@ -1,9 +1,12 @@
 package com.ecosoft.customer.customers.controller;
 
 import com.ecosoft.customer.customers.model.UserDTO;
+import com.ecosoft.customer.customers.service.IUserService;
 import com.ecosoft.customer.customers.validators.GroupValidatorOnCreate;
 import com.ecosoft.customer.customers.validators.GroupValidatorOnUpdate;
 import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Api(tags = "User Api Rest")
 public class UserControllerRest {
 
+    @Autowired
+    //@Qualifier("BD") // Se quita el @Qualifier, porque se define que levantas por @ConditionalOnProperty
+    private IUserService service;
+
     @GetMapping("/{id}")
     @ApiOperation(notes="Retrieve one user system by id",value="Get user by id")
     @ApiResponses(value = {
@@ -35,7 +42,7 @@ public class UserControllerRest {
     public ResponseEntity<UserDTO> getUserByID(@ApiParam(example = "1",value = "Identifier for User",allowableValues = "1,2,3,4",required = true)
                                                    @PathVariable("id") Integer id){
         System.out.println("Recovery user by id");
-        UserDTO userDTO = new UserDTO(1,"Emerson", "admin","admin");
+        UserDTO userDTO = service.getUserById(id);
 
         addLinkHATEOAS(userDTO);
 
