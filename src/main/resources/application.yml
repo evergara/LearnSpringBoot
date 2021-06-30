@@ -10,4 +10,7 @@ app:
   year: 2021
   ##Community, Pro
   edition: Community
-  countries: es, ar, it, ca. br
+  env: dev
+  countries: es, ar, it, ca, br
+##Cambiar el nivel de traza
+### logging:level: root: info

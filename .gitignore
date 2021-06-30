@@ -18,7 +18,8 @@ target/
 *.iws
 *.iml
 *.ipr
-
+### Traza
+.logs
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

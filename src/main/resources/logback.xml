@@ -1,0 +1,75 @@
+<configuration>
+    <property scope="context" resource="application.yml" />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender" >
+        <file>logs/application.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>app.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/app-%d{yyyy-MM-dd-hh-mm-ss}.%i.log</fileNamePattern>
+            <maxFileSize>1000KB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>userid</key>
+            <defaultValue>unknown</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+                <file>logs/user-${userid}.log</file>
+                <encoder>
+                    <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%msg%n</pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+
+    <if condition='property("env").equals("dev")'>
+        <then>
+            <root level="info">
+                <appender-ref ref="STDOUT" />
+                <!--<appender-ref ref="ROLLING" />-->
+                <!--<appender-ref ref="FILE" />-->
+            </root>
+        </then>
+    </if>
+
+    <if condition='property("env").equals("prod")'>
+        <then>
+            <root level="info">
+                <appender-ref ref="SIFT" />
+                <!--<appender-ref ref="ROLLING" />-->
+                <!--<appender-ref ref="FILE" />-->
+            </root>
+        </then>
+    </if>
+
+    <if condition='property("env").equals("test")'>
+        <then>
+            <root level="DEBUG">
+                <appender-ref ref="FILE" />
+            </root>
+            <logger name="com.ecosoft.customer.customers.controller" level="ERROR"  additivity="false">
+                <appender-ref ref="FILE_CONTROLLER" />
+            </logger>
+        </then>
+    </if>
+
+</configuration>
